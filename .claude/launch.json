@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rive-inspector",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-I", "-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "C:/Users/User/AppData/Local/Temp/claude/1165f0bcb81ef1e4/6de4e32d-9cb6-4ae6-aa94-c46ba2db33a4/scratchpad/rive"],
+      "port": 8765
+    }
+  ]
+}
