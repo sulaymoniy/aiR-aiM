@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Talk to Dex</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="stage">
+        <canvas id="rive" aria-label="Animated character"></canvas>
+        <div class="status" id="status" role="status">
+          <span class="dot" id="statusDot"></span><span id="statusText">Ready</span>
+        </div>
+        <div class="captions" aria-live="polite">
+          <p class="cap user" id="capUser"></p>
+          <p class="cap char" id="capChar"></p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="primary">Start conversation</button>
+        <button id="muteBtn" class="icon" aria-pressed="false" title="Mute microphone" disabled>Mute</button>
+      </div>
+      <form id="textForm" class="textbox">
+        <input id="textInput" placeholder="No mic? Type here and press Enter" autocomplete="off" />
+        <button>Send</button>
+      </form>
+      <p class="notice" id="notice" hidden></p>
+    </div>
+
+    <aside class="overlay" id="overlay" hidden>
+      <div class="ov-head"><b>Latency</b><button id="ovClose" aria-label="Close">×</button></div>
+      <table>
+        <tr><td>speech end → endpoint</td><td id="m-vad">–</td></tr>
+        <tr><td>endpoint → first LLM token</td><td id="m-tok">–</td></tr>
+        <tr><td>endpoint → first sentence</td><td id="m-text">–</td></tr>
+        <tr><td>endpoint → first TTS audio</td><td id="m-tts">–</td></tr>
+        <tr><td>endpoint → playback start</td><td id="m-play">–</td></tr>
+        <tr class="total"><td>speech end → first word</td><td id="m-total">–</td></tr>
+      </table>
+      <p class="ov-foot">Press <kbd>D</kbd> to toggle · <a href="/debug.html">Rive debug page</a></p>
+    </aside>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

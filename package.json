@@ -1,0 +1,46 @@
+{
+  "name": "talking-character",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Real-time voice-to-voice conversational character with a lip-synced Rive avatar.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "node scripts/copy-vad-assets.mjs",
+    "dev": "concurrently -k -n server,web -c cyan,magenta \"tsx watch server/index.ts\" \"vite\"",
+    "dev:mock": "concurrently -k -n mock,web -c yellow,magenta \"tsx scripts/mock-services.ts\" \"vite\"",
+    "dev:server": "tsx watch server/index.ts",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "tsx server/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "voice:prepare": "tsx scripts/voice-prepare.ts",
+    "voice:create": "tsx scripts/voice-create.ts",
+    "voice:list": "tsx scripts/voice-list.ts",
+    "kokoro:check": "tsx scripts/kokoro-check.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.3.0",
+    "@ricky0123/vad-web": "0.0.31",
+    "@rive-app/canvas": "2.49.0",
+    "dotenv": "18.0.9",
+    "ffmpeg-static": "5.3.0",
+    "kokoro-js": "1.2.1",
+    "onnxruntime-web": "1.31.1",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/ws": "8.18.2",
+    "concurrently": "10.0.6",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vite": "8.3.5"
+  },
+  "allowScripts": {
+    "ffmpeg-static@5.3.0": true,
+    "esbuild@0.28.2": true
+  }
+}

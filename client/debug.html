@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rive Debug</title>
+    <link rel="stylesheet" href="/src/debug.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Rive debug: <code>character.riv</code></h1>
+      <a href="/">← back to the conversation</a>
+    </header>
+    <main>
+      <section class="stage">
+        <canvas id="rive"></canvas>
+        <div class="row">
+          <label><input type="checkbox" id="overrides" checked /> procedural layer (emotion override, blinks, breathing, gaze)</label>
+        </div>
+        <pre id="states" aria-live="polite"></pre>
+      </section>
+
+      <section class="panel">
+        <h2>Mouth: <code>lips sync id</code></h2>
+        <div id="mouths" class="buttons"></div>
+        <label class="slider">
+          <span><code>timestamp</code> (mouth blend speed) <b id="tsv"></b></span>
+          <input type="range" id="ts" min="0" max="100" step="1" />
+        </label>
+        <form id="saytest" class="row">
+          <input id="sayText" value="Oh, come on. Take it to the shop and sell it, you know?" />
+          <button>Lip-sync test</button>
+        </form>
+
+        <h2>Expression</h2>
+        <p class="note">The file has <b>no</b> <code>emotion</code> input (that name is a state-machine <i>layer</i>). Expressions are built on top: see the findings below.</p>
+        <div id="emotions" class="buttons"></div>
+        <div class="buttons"><button id="blink">Blink</button></div>
+
+        <h2>Animations (play solo)</h2>
+        <div id="anims" class="buttons"></div>
+
+        <h2>File contents</h2>
+        <pre id="info"></pre>
+      </section>
+
+      <section class="findings">
+        <h2>Findings</h2>
+        <ul>
+          <li><b>Artboard</b> <code>Coach model</code>, 3181 × 2000, head and upper body on a dark backdrop baked into the artboard.</li>
+          <li><b>State machine</b> <code>State Machine 1</code> has exactly two inputs, both numbers:
+            <code>lips sync id</code> (default 9) and <code>timestamp</code> (default 25). It runs four layers whose states report as
+            <code>emotion 1</code>/<code>emotion 2</code>, the lip states, <code>idle</code>, and <code>Timeline 2</code>.</li>
+          <li><b><code>timestamp</code> is not a time.</b> It is the blend speed of the lip layer: 0 freezes the mouth on whatever shape it has,
+            20 ≈ 170 ms to reach a shape, 30 ≈ 120 ms, 50 ≈ 70 ms, 100+ is instant. The app uses 45 while talking and 22 when settling to rest.</li>
+          <li><b><code>emotion</code> is a layer, not an input.</b> The layer flips between <code>emotion 1</code> (neutral) and
+            <code>emotion 2</code> (heavy lids, flat lowered brows) every 4 s by itself, whatever the inputs are. The app re-applies
+            <code>emotion 1</code> each frame and blends <code>emotion 2</code> in by the amount each emotion needs, then adds brows, eye size,
+            gaze and head tilt procedurally (see the table in <code>client/src/rig.ts</code>).</li>
+          <li><b>"Timeline 29"</b> does not exist: it is <code>Timeline 2</code> followed by the next byte of the file ("9") when the binary is read as text,
+            like "emotion 19" / "idle9". <code>Timeline 2</code> is a 0.5 s ping-pong that slightly lowers the upper eyelids (a soft eye flutter),
+            running constantly on its own layer. It is not a blink; the app adds real blinks.</li>
+          <li><code>idle</code>: 0.67 s ping-pong head bob (~16 units). <code>demo lipsync</code>: a 2 s talking loop, played when
+            <code>lips sync id</code> is 9 (8 shows the same). <code>X</code> and <code>Y</code>: no visible effect (empty timelines).</li>
+          <li>The eyelid rig (<code>Ctrl_upper eyelid</code> / <code>Ctrl_lower eyelid</code> root bones) only reaches the right eye, so blinks scale the
+            <code>eyes</code> group instead.</li>
+        </ul>
+        <h3>Mouth shapes</h3>
+        <table id="mouthTable"><thead><tr><th>id</th><th>shape</th><th>used for</th></tr></thead><tbody></tbody></table>
+      </section>
+    </main>
+    <script type="module" src="/src/debug.ts"></script>
+  </body>
+</html>

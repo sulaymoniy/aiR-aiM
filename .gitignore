@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.env.example
+voice-samples/prepared/
+client/public/vad/
+*.log
+voice-samples/*.mp3
